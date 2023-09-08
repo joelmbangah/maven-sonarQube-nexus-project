@@ -112,9 +112,10 @@ pipeline {
                 sh 'mvn clean deploy -DskipTests'
                 }
               }
-            //    
+              
             }
         }
+                                                                                //    
 
         // stage('Upload artifact to Nexus') {
             // steps {
