@@ -22,7 +22,7 @@ pipeline {
         stage('git checkout') {
             steps {
                 // Get some code from a GitHub repository
-                 git branch: 'main', url: 'https://github.com/anselmenumbisia/jjtech-maven-sonarqube-nexus-prometheus-project.git'
+                 git branch: 'main', url: 'https://github.com/joelmbangah/maven-sonarQube-nexus-project.git'
             }
 
             }
@@ -93,7 +93,7 @@ pipeline {
                         sh """
                     mvn sonar:sonar \
                       -Dsonar.projectKey=spring-boot-demo \
-                      -Dsonar.host.url=http://172.31.80.37:9000 \
+                      -Dsonar.host.url=http://172.31.54.134:9000 \
                       -Dsonar.login=$SONAR_TOKEN
                      """
                     }
@@ -102,38 +102,38 @@ pipeline {
         }
     }
 
-        //           stage('Upload artifact to Nexus') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
-        //         sh "sed -i \"s/.*<username><\\/username>/<username>$USER_NAME<\\/username>/g\" ${WORKSPACE}/settings.xml"
-        //         sh "sed -i \"s/.*<password><\\/password>/<password>$PASSWORD<\\/password>/g\" ${WORKSPACE}/settings.xml"
-        //         sh 'sudo cp ${WORKSPACE}/settings.xml /var/lib/jenkins/.m2'
-        //         dir('JavaWebApp/') {                
-        //         sh 'mvn clean deploy -DskipTests'
-        //         }
-        //       }
-               
-        //     }
-        // }
-
-          stage('Upload artifact to Nexus') {
+        stage('Upload artifact to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
                 sh "sed -i \"s/.*<username><\\/username>/<username>$USER_NAME<\\/username>/g\" ${WORKSPACE}/settings.xml"
                 sh "sed -i \"s/.*<password><\\/password>/<password>$PASSWORD<\\/password>/g\" ${WORKSPACE}/settings.xml"
-                sh "sed -i 's|http://172.31.88.170:8081/repository/maven-snapshots/|http://172.31.88.170:8081/repository/maven-snapshots/|g' ${WORKSPACE}/settings.xml"
-                sh "sed -i 's|http://172.31.88.170:8081/repository/maven-releases/|http://172.31.88.170:8081/repository/maven-releases/|g' ${WORKSPACE}/settings.xml"
-                sh "sed -i 's|<sonar.host.url>http://172.31.80.37:9000</sonar.host.url>|<sonar.host.url>http://172.31.80.37:9000</sonar.host.url>|g' ${WORKSPACE}/settings.xml"
                 sh 'sudo cp ${WORKSPACE}/settings.xml /var/lib/jenkins/.m2'
-                dir('JavaWebApp/') {
-                sh "sed -i 's|http://172.31.30.168:8081/repository/maven-snapshots/|http://172.31.88.170:8081/repository/maven-snapshots/|g' pom.xml"
-                sh "sed -i 's|http://172.31.30.168:8081/repository/maven-releases/|http://172.31.88.170:8081/repository/maven-releases/|g' pom.xml"                
+                dir('JavaWebApp/') {                
                 sh 'mvn clean deploy -DskipTests'
                 }
               }
-               
+            //    
             }
         }
+
+        // stage('Upload artifact to Nexus') {
+            // steps {
+                // withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
+                // sh "sed -i \"s/.*<username><\\/username>/<username>$USER_NAME<\\/username>/g\" ${WORKSPACE}/settings.xml"
+                // sh "sed -i \"s/.*<password><\\/password>/<password>$PASSWORD<\\/password>/g\" ${WORKSPACE}/settings.xml"
+                // // sh "sed -i 's|http://172.31.48.194:8081/repository/maven-snapshots/|http://172.31.88.170:8081/repository/maven-snapshots/|g' ${WORKSPACE}/settings.xml"
+                // // sh "sed -i 's|http://172.31.48.194:8081/repository/maven-releases/|http://172.31.48.194:8081/repository/maven-releases/|g' ${WORKSPACE}/settings.xml"
+                // // sh "sed -i 's|<sonar.host.url>http://172.31.54.134:9000</sonar.host.url>|<sonar.host.url>http://172.31.80.37:9000</sonar.host.url>|g' ${WORKSPACE}/settings.xml"
+                // sh 'sudo cp ${WORKSPACE}/settings.xml /var/lib/jenkins/.m2'
+                // dir('JavaWebApp/') {
+                // sh "sed -i 's|http://172.31.48.194:8081/repository/maven-snapshots/|http://172.31.48.194:8081/repository/maven-snapshots/|g' pom.xml"
+                // // sh "sed -i 's|http://172.31.48.194:8081/repository/maven-releases/|http://172.31.48.194:8081/repository/maven-releases/|g' pom.xml"                
+                // sh 'mvn clean deploy -DskipTests'
+                // }
+            //   }
+            //    
+            // }
+        // }
 
     // stage('Deploy to Development Env') {
     //     environment {
